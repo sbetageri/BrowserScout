@@ -3,12 +3,31 @@ import asyncio
 from playwright.async_api import async_playwright, playwright
 
 import utils
+import constants
 
 class Browser:
+    CLICKABLE_ITEMS = {
+        constants.BUTTON,
+        constants.CHECKBOX,
+        constants.LINK,
+        constants.MENU,
+        constants.MENU_BAR,
+        constants.MENU_ITEM,
+        constants.MENU_ITEM_CHECKBOX,
+        constants.MENU_ITEM_RADIO,
+        constants.NAVIGATION,
+        constants.RADIO,
+        constants.RADIO_GROUP,
+        constants.SEARCH,
+        constants.SEARCH_BOX,
+        constants.SPIN_BUTTON,
+        constants.TEXTBOX
+    }
     def __init__(self, headless: bool=True):
         self.playwright = None
         self.browser = None
         self.headless = headless
+        self.opened_page = None
 
     async def setup_playwright_browser(self):
         """
@@ -31,8 +50,17 @@ class Browser:
 
     async def open_page(self, url: str):
         """Open the given page"""
-        page = await self.browser.new_page()
-        await page.goto(url)
+        self.opened_page = await self.browser.new_page()
+        await self.opened_page.goto(url)
+
+    async def find_all_input_locators(self, url: str=None):
+        """Identify all locators in the page that correspond to an input element"""
+        if url is not None:
+            await self.open_page(url)
+
+        
+
+
 
 async def main():
     try:
